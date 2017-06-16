@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.example.bradcampbell"
+        minSdkVersion 9
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "com.example.bradcampbell.TestAppAndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        androidTest.java.srcDirs = ['src/androidTest/java', 'src/sharedTest/java']
+        test.java.srcDirs = ['src/test/java', 'src/sharedTest/java']
+    }
+
+    buildTypes {
+        debug
+        release
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+//noinspection GroovyAssignabilityCheck
+configurations.all {
+    resolutionStrategy.force deps.supportannotations
+}
+
+dependencies {
+    // Support
+    compile deps.appcompat
+
+    // RxJava
+    compile deps.rxjava
+    compile deps.rxandroid
+
+    // ButterKnife
+    compile deps.butterknife
+
+    // Dagger
+    compile deps.dagger
+    apt deps.daggercompiler
+    provided deps.glassfishannotations
+
+    // AutoValue / PaperParcel
+    compile deps.autovalue
+    compile deps.paperparcel
+    apt deps.paperparcelcompiler
+
+    // Unit
+    testCompile deps.junit
+    testCompile deps.robolectric
+    testCompile deps.mockito
+
+    // Integration
+    androidTestCompile deps.testrunner
+    androidTestCompile deps.testrules
+    androidTestCompile deps.espresso
+    androidTestCompile deps.mockito
+    androidTestCompile deps.dexmaker
+    androidTestCompile deps.dexmakermockito
+    androidTestCompile deps.spoon
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
+    }
+}
+
+apply plugin: 'spoon'
+
+spoon {
+    debug = true
+}
